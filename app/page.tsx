@@ -5,9 +5,10 @@ import { TypeObjectiveManagement } from "@/components/TypeObjectiveManagement";
 import { TimeframeManagement } from "@/components/TimeframeManagement";
 import { ActionManagement } from "@/components/ActionManagement";
 import { Dashboard } from "@/components/Dashboard";
+import { ImprovementPlanManagement } from "@/components/ImprovementPlanManagement";
 import { useState } from "react";
 
-type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions" | "dashboard";
+type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions" | "dashboard" | "improvement-plans";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>("home");
@@ -188,6 +189,29 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Módulo de Planes de Mejora */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-semibold">Módulo de Planes de Mejora</h4>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-600 mb-3">
+                        Gestión de planes de mejora con los siguientes endpoints:
+                      </p>
+                      <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                        <li>• POST /improvementplan/createImprovementPlan</li>
+                        <li>• GET /improvementplan/listImprovementPlans</li>
+                        <li>• PATCH /improvementplan/finalizeImprovementPlan</li>
+                      </ul>
+                      <button
+                        onClick={() => setCurrentView("improvement-plans")}
+                        className="w-full px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors"
+                      >
+                        Abrir Planes de Mejora
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -273,6 +297,16 @@ export default function Home() {
               ← Volver al Inicio
             </button>
             <Dashboard />
+          </div>
+        ) : currentView === "improvement-plans" ? (
+          <div className="space-y-4">
+            <button
+              onClick={() => setCurrentView("home")}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Volver al Inicio
+            </button>
+            <ImprovementPlanManagement />
           </div>
         ) : null}
       </div>
