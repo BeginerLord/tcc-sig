@@ -2,9 +2,10 @@
 
 import { UserManagement } from "@/components/UserManagement";
 import { TypeObjectiveManagement } from "@/components/TypeObjectiveManagement";
+import { TimeframeManagement } from "@/components/TimeframeManagement";
 import { useState } from "react";
 
-type ViewType = "home" | "users" | "type-objectives";
+type ViewType = "home" | "users" | "type-objectives" | "timeframes";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>("home");
@@ -63,7 +64,7 @@ export default function Home() {
                   Módulos Implementados
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Módulo de Usuarios */}
                   <div className="border rounded-lg overflow-hidden">
                     <div className="bg-gray-50 px-4 py-3 border-b">
@@ -108,6 +109,30 @@ export default function Home() {
                         className="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
                       >
                         Abrir Tipos de Objetivos
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Módulo de Periodos de Tiempo */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-semibold">Módulo de Periodos de Tiempo</h4>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-600 mb-3">
+                        Gestión de periodos (timeframes) con los siguientes endpoints:
+                      </p>
+                      <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                        <li>• POST /timeframes/createTimeframe</li>
+                        <li>• GET /timeframes/listTimeframes</li>
+                        <li>• PATCH /timeframes/updateTimeframeName</li>
+                        <li>• PATCH /timeframes/updateTimeframeExtensionDate</li>
+                      </ul>
+                      <button
+                        onClick={() => setCurrentView("timeframes")}
+                        className="w-full px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
+                      >
+                        Abrir Periodos de Tiempo
                       </button>
                     </div>
                   </div>
@@ -166,6 +191,16 @@ export default function Home() {
               ← Volver al Inicio
             </button>
             <TypeObjectiveManagement />
+          </div>
+        ) : currentView === "timeframes" ? (
+          <div className="space-y-4">
+            <button
+              onClick={() => setCurrentView("home")}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Volver al Inicio
+            </button>
+            <TimeframeManagement />
           </div>
         ) : null}
       </div>
