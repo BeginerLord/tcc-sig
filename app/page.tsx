@@ -1,10 +1,13 @@
 "use client";
 
 import { UserManagement } from "@/components/UserManagement";
+import { TypeObjectiveManagement } from "@/components/TypeObjectiveManagement";
 import { useState } from "react";
 
+type ViewType = "home" | "users" | "type-objectives";
+
 export default function Home() {
-  const [showUserManagement, setShowUserManagement] = useState(false);
+  const [currentView, setCurrentView] = useState<ViewType>("home");
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -20,7 +23,7 @@ export default function Home() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {!showUserManagement ? (
+        {currentView === "home" ? (
           <div className="space-y-8">
             <div className="bg-white rounded-lg shadow-sm border p-8">
               <h2 className="text-2xl font-bold mb-4">
@@ -59,27 +62,54 @@ export default function Home() {
                 <h3 className="text-xl font-semibold">
                   Módulos Implementados
                 </h3>
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="bg-gray-50 px-4 py-3 border-b">
-                    <h4 className="font-semibold">Módulo de Usuarios</h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Módulo de Usuarios */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-semibold">Módulo de Usuarios</h4>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-600 mb-3">
+                        Gestión completa de usuarios con los siguientes endpoints:
+                      </p>
+                      <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                        <li>• POST /user/createUser</li>
+                        <li>• GET /user/list</li>
+                        <li>• DELETE /user/delete</li>
+                        <li>• PATCH /user/state</li>
+                        <li>• GET /user/context</li>
+                      </ul>
+                      <button
+                        onClick={() => setCurrentView("users")}
+                        className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                      >
+                        Abrir Gestión de Usuarios
+                      </button>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <p className="text-sm text-gray-600 mb-3">
-                      Gestión completa de usuarios con los siguientes endpoints:
-                    </p>
-                    <ul className="text-sm space-y-1 text-gray-700">
-                      <li>• POST /user/createUser - Crear usuario</li>
-                      <li>• GET /user/list - Listar usuarios</li>
-                      <li>• DELETE /user/delete - Eliminar usuario</li>
-                      <li>• PATCH /user/state - Actualizar estado</li>
-                      <li>• GET /user/context - Contexto del usuario</li>
-                    </ul>
-                    <button
-                      onClick={() => setShowUserManagement(true)}
-                      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                    >
-                      Abrir Gestión de Usuarios
-                    </button>
+
+                  {/* Módulo de Tipos de Objetivos */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-semibold">Módulo de Tipos de Objetivos</h4>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-600 mb-3">
+                        Gestión de tipos de objetivos con los siguientes endpoints:
+                      </p>
+                      <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                        <li>• POST /type-objectives/createTypeObjective</li>
+                        <li>• GET /type-objectives/listAllTypeObjective</li>
+                        <li>• PATCH /type-objectives/updateNameTypeObjective</li>
+                      </ul>
+                      <button
+                        onClick={() => setCurrentView("type-objectives")}
+                        className="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                      >
+                        Abrir Tipos de Objetivos
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -117,17 +147,27 @@ export default function Home() {
               </div>
             </div>
           </div>
-        ) : (
+        ) : currentView === "users" ? (
           <div className="space-y-4">
             <button
-              onClick={() => setShowUserManagement(false)}
+              onClick={() => setCurrentView("home")}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
             >
               ← Volver al Inicio
             </button>
             <UserManagement />
           </div>
-        )}
+        ) : currentView === "type-objectives" ? (
+          <div className="space-y-4">
+            <button
+              onClick={() => setCurrentView("home")}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Volver al Inicio
+            </button>
+            <TypeObjectiveManagement />
+          </div>
+        ) : null}
       </div>
     </main>
   );
