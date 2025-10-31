@@ -4,9 +4,10 @@ import { UserManagement } from "@/components/UserManagement";
 import { TypeObjectiveManagement } from "@/components/TypeObjectiveManagement";
 import { TimeframeManagement } from "@/components/TimeframeManagement";
 import { ActionManagement } from "@/components/ActionManagement";
+import { Dashboard } from "@/components/Dashboard";
 import { useState } from "react";
 
-type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions";
+type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions" | "dashboard";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>("home");
@@ -64,6 +65,33 @@ export default function Home() {
                 <h3 className="text-xl font-semibold">
                   Módulos Implementados
                 </h3>
+
+                {/* Módulo Destacado: Dashboard */}
+                <div className="border-2 border-blue-500 rounded-lg overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50">
+                  <div className="bg-blue-500 px-4 py-3 border-b">
+                    <h4 className="font-semibold text-white flex items-center gap-2">
+                      <span className="text-xl">⚡</span>
+                      Dashboard en Tiempo Real (Socket.IO)
+                    </h4>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm text-gray-700 mb-3">
+                      Métricas actualizadas en tiempo real mediante Socket.IO:
+                    </p>
+                    <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                      <li>• WebSocket con autenticación JWT</li>
+                      <li>• Evento: dashboard:update (métricas)</li>
+                      <li>• Reconexión automática</li>
+                      <li>• Estadísticas de usuarios y planes</li>
+                    </ul>
+                    <button
+                      onClick={() => setCurrentView("dashboard")}
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-semibold"
+                    >
+                      Abrir Dashboard en Tiempo Real
+                    </button>
+                  </div>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Módulo de Usuarios */}
@@ -235,6 +263,16 @@ export default function Home() {
               ← Volver al Inicio
             </button>
             <ActionManagement />
+          </div>
+        ) : currentView === "dashboard" ? (
+          <div className="space-y-4">
+            <button
+              onClick={() => setCurrentView("home")}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Volver al Inicio
+            </button>
+            <Dashboard />
           </div>
         ) : null}
       </div>
