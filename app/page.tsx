@@ -3,9 +3,10 @@
 import { UserManagement } from "@/components/UserManagement";
 import { TypeObjectiveManagement } from "@/components/TypeObjectiveManagement";
 import { TimeframeManagement } from "@/components/TimeframeManagement";
+import { ActionManagement } from "@/components/ActionManagement";
 import { useState } from "react";
 
-type ViewType = "home" | "users" | "type-objectives" | "timeframes";
+type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>("home");
@@ -136,6 +137,29 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Módulo de Acciones */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-semibold">Módulo de Acciones</h4>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-600 mb-3">
+                        Gestión de acciones con los siguientes endpoints:
+                      </p>
+                      <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                        <li>• GET /actions/listActions</li>
+                        <li>• POST /actions/createAction</li>
+                        <li>• PATCH /actions/finalize</li>
+                      </ul>
+                      <button
+                        onClick={() => setCurrentView("actions")}
+                        className="w-full px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors"
+                      >
+                        Abrir Gestión de Acciones
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -201,6 +225,16 @@ export default function Home() {
               ← Volver al Inicio
             </button>
             <TimeframeManagement />
+          </div>
+        ) : currentView === "actions" ? (
+          <div className="space-y-4">
+            <button
+              onClick={() => setCurrentView("home")}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Volver al Inicio
+            </button>
+            <ActionManagement />
           </div>
         ) : null}
       </div>
