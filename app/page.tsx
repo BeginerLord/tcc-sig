@@ -6,9 +6,10 @@ import { TimeframeManagement } from "@/components/TimeframeManagement";
 import { ActionManagement } from "@/components/ActionManagement";
 import { Dashboard } from "@/components/Dashboard";
 import { ImprovementPlanManagement } from "@/components/ImprovementPlanManagement";
+import { ObjectiveManagement } from "@/components/ObjectiveManagement";
 import { useState } from "react";
 
-type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions" | "dashboard" | "improvement-plans";
+type ViewType = "home" | "users" | "type-objectives" | "timeframes" | "actions" | "dashboard" | "improvement-plans" | "objectives";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>("home");
@@ -212,6 +213,29 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Módulo de Objetivos */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-semibold">Módulo de Objetivos</h4>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-600 mb-3">
+                        Gestión de objetivos con los siguientes endpoints:
+                      </p>
+                      <ul className="text-sm space-y-1 text-gray-700 mb-4">
+                        <li>• POST /objectives/createObjective</li>
+                        <li>• GET /objectives/listObjectives</li>
+                        <li>• PATCH /objectives/finalize</li>
+                      </ul>
+                      <button
+                        onClick={() => setCurrentView("objectives")}
+                        className="w-full px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors"
+                      >
+                        Abrir Gestión de Objetivos
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -307,6 +331,16 @@ export default function Home() {
               ← Volver al Inicio
             </button>
             <ImprovementPlanManagement />
+          </div>
+        ) : currentView === "objectives" ? (
+          <div className="space-y-4">
+            <button
+              onClick={() => setCurrentView("home")}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Volver al Inicio
+            </button>
+            <ObjectiveManagement />
           </div>
         ) : null}
       </div>
