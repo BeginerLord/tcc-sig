@@ -67,7 +67,7 @@ export default function DashboardPage() {
       icon: "🎓",
       color: "bg-teal-500",
       hoverColor: "hover:bg-teal-600",
-      href: "#",
+      href: "/objectives",
     },
   ];
 
