@@ -51,7 +51,7 @@ export default function DashboardPage() {
       icon: "📊",
       color: "bg-indigo-500",
       hoverColor: "hover:bg-indigo-600",
-      href: "#",
+      href: "/metrics",
     },
     {
       title: "Planes de Mejora",
@@ -143,9 +143,8 @@ export default function DashboardPage() {
                 <Link
                   key={index}
                   href={module.href}
-                  className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-left border-2 border-transparent hover:border-gray-200 group ${
-                    module.href === "#" ? "opacity-60 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-left border-2 border-transparent hover:border-gray-200 group ${module.href === "#" ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
                   onClick={(e) => {
                     if (module.href === "#") {
                       e.preventDefault();
