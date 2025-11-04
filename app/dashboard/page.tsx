@@ -59,7 +59,7 @@ export default function DashboardPage() {
       icon: "📋",
       color: "bg-rose-500",
       hoverColor: "hover:bg-rose-600",
-      href: "#",
+      href: "/improvement-plans",
     },
     {
       title: "Gestión de Objetivos",
