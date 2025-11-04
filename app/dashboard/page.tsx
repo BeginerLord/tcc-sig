@@ -35,7 +35,7 @@ export default function DashboardPage() {
       icon: "📅",
       color: "bg-purple-500",
       hoverColor: "hover:bg-purple-600",
-      href: "#",
+      href: "/timeframes",
     },
     {
       title: "Gestión de Acciones",
