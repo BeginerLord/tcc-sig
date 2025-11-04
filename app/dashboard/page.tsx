@@ -43,7 +43,7 @@ export default function DashboardPage() {
       icon: "⚡",
       color: "bg-amber-500",
       hoverColor: "hover:bg-amber-600",
-      href: "#",
+      href: "/actions-mgmt",
     },
     {
       title: "Métricas Globales",
