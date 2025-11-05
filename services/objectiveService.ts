@@ -37,18 +37,14 @@ export const objectiveService = {
   },
 
   /**
-   * PATCH /objectives/finalize
+   * PATCH /objectives/finalize?code={code}
    * Finaliza un objetivo existente
    */
   finalizeObjective: async (
     data: FinalizeObjectiveRequest
   ): Promise<FinalizeObjectiveResponse> => {
     const response = await KaizenProApi.patch<FinalizeObjectiveResponse>(
-      "/objectives/finalize",
-      null,
-      {
-        params: data,
-      }
+      `/objectives/finalize?code=${data.code}`
     );
     return response.data;
   },
