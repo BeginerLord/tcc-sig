@@ -20,6 +20,58 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@layer base {
+  /* Estilos para inputs, selects y textareas */
+  input,
+  select,
+  textarea {
+    @apply text-gray-900;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-gray-400;
+  }
+
+  /* Asegurar que el texto sea visible en inputs específicos */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    @apply text-gray-900 placeholder-gray-400;
+  }
+
+  /* Estilos para select */
+  select {
+    @apply text-gray-900;
+  }
+
+  select option {
+    @apply text-gray-900 bg-white;
+  }
+
+  /* Estilos para textarea */
+  textarea {
+    @apply text-gray-900 placeholder-gray-400;
+  }
+
+  /* Autofill styles para prevenir el color gris del navegador */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #111827 !important;
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    box-shadow: 0 0 0 1000px white inset !important;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

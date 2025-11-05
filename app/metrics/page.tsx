@@ -1,8 +1,12 @@
 "use client";
 
 import { useDashboard } from "@/hooks/useDashboard";
-import { MetricsCards } from "@/components/Metrics/MetricsCards";
+import { MetricsCards, MetricDetailModal } from "@/components/Metrics";
+import { DashboardMetric } from "@/models/Dashboard";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowLeft, AlertCircle, RefreshCw, Loader2, Zap, Shield, RotateCw, BarChart3 } from "lucide-react";
+import { useState } from "react";
 
 export default function MetricsPage() {
     const {
@@ -15,154 +19,222 @@ export default function MetricsPage() {
         reconnect,
     } = useDashboard();
 
+    const [selectedMetric, setSelectedMetric] = useState<DashboardMetric | null>(null);
+    const [modalTitle, setModalTitle] = useState("");
+    const [modalColor, setModalColor] = useState<"blue" | "indigo">("blue");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleMetricClick = (metric: DashboardMetric, title: string, color: "blue" | "indigo") => {
+        setSelectedMetric(metric);
+        setModalTitle(title);
+        setModalColor(color);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setTimeout(() => {
+            setSelectedMetric(null);
+        }, 300);
+    };
+
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30">
             {/* Header */}
-            <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+            <motion.header
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white/80 backdrop-blur-md shadow-sm border-b sticky top-0 z-50"
+            >
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <Link
                                 href="/dashboard"
-                                className="text-gray-600 hover:text-gray-900 transition-colors"
+                                className="text-gray-600 hover:text-gray-900 transition-all hover:scale-110"
                             >
-                                <svg
-                                    className="w-6 h-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                                    />
-                                </svg>
+                                <ArrowLeft className="w-6 h-6" />
                             </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">
+                            <motion.div
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            >
+                                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                                     📊 Métricas Globales
                                 </h1>
                                 <p className="text-sm text-gray-600">
                                     Dashboard en tiempo real del sistema
                                 </p>
-                            </div>
+                            </motion.div>
                         </div>
 
                         {/* Connection Status Badge */}
                         <div className="flex items-center gap-3">
                             {isConnected && (
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg">
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg shadow-sm"
+                                >
                                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                     <span className="text-sm font-medium text-green-700">
                                         Conectado
                                     </span>
-                                </div>
+                                </motion.div>
                             )}
 
                             {isConnecting && (
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                    <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm"
+                                >
+                                    <Loader2 className="w-4 h-4 text-yellow-600 animate-spin" />
                                     <span className="text-sm font-medium text-yellow-700">
                                         Conectando...
                                     </span>
-                                </div>
+                                </motion.div>
                             )}
 
                             {hasError && (
-                                <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg">
-                                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="flex items-center gap-2"
+                                >
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg shadow-sm">
+                                        <AlertCircle className="w-4 h-4 text-red-500" />
                                         <span className="text-sm font-medium text-red-700">
                                             Error
                                         </span>
                                     </div>
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
                                         onClick={reconnect}
-                                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
                                     >
+                                        <RefreshCw className="w-4 h-4" />
                                         Reconectar
-                                    </button>
-                                </div>
+                                    </motion.button>
+                                </motion.div>
                             )}
                         </div>
                     </div>
                 </div>
-            </header>
+            </motion.header>
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 py-8">
                 <div className="space-y-6">
                     {/* Hero Section with Real-time Info */}
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
-                                <span className="text-4xl">📊</span>
-                            </div>
-                            <div>
-                                <h2 className="text-3xl font-bold mb-2">
-                                    Dashboard en Tiempo Real
-                                </h2>
-                                <p className="text-indigo-100 text-lg">
-                                    Métricas actualizadas automáticamente mediante Socket.IO
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2 mt-4">
-                            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                                <p className="text-sm text-indigo-100">
-                                    Estado: <span className="font-semibold text-white">{connectionStatus}</span>
-                                </p>
-                            </div>
-                            {isConnected && (
-                                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                                    <p className="text-sm text-indigo-100">
-                                        🔄 Actualización automática activa
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 rounded-2xl shadow-2xl p-8 text-white relative overflow-hidden"
+                    >
+                        {/* Animated background circles */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
+
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-4 mb-4">
+                                <motion.div
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    transition={{ duration: 0.6, delay: 0.4 }}
+                                    className="bg-white/20 backdrop-blur-sm rounded-xl p-4"
+                                >
+                                    <span className="text-4xl">📊</span>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ x: -20, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ duration: 0.6, delay: 0.5 }}
+                                >
+                                    <h2 className="text-3xl font-bold mb-2">
+                                        Dashboard en Tiempo Real
+                                    </h2>
+                                    <p className="text-indigo-100 text-lg">
+                                        Métricas actualizadas automáticamente mediante Socket.IO
                                     </p>
-                                </div>
-                            )}
+                                </motion.div>
+                            </div>
+                            <div className="flex items-center gap-2 mt-4 flex-wrap">
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.6 }}
+                                    className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2"
+                                >
+                                    <p className="text-sm text-indigo-100">
+                                        Estado: <span className="font-semibold text-white">{connectionStatus}</span>
+                                    </p>
+                                </motion.div>
+                                {isConnected && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.5, delay: 0.7 }}
+                                        className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center gap-2"
+                                    >
+                                        <RefreshCw className="w-4 h-4 animate-spin" />
+                                        <p className="text-sm text-indigo-100">
+                                            Actualización automática activa
+                                        </p>
+                                    </motion.div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Error Alert */}
                     {error && (
-                        <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 shadow-md"
+                        >
                             <div className="flex items-start gap-3">
-                                <svg
-                                    className="w-6 h-6 text-red-500 mt-0.5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                </svg>
+                                <AlertCircle className="w-6 h-6 text-red-500 mt-0.5" />
                                 <div className="flex-1">
                                     <h3 className="text-red-800 font-semibold mb-1">
                                         Error de Conexión
                                     </h3>
                                     <p className="text-red-700 text-sm">{error}</p>
                                 </div>
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={reconnect}
-                                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
                                 >
+                                    <RefreshCw className="w-4 h-4" />
                                     Reintentar
-                                </button>
+                                </motion.button>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
 
                     {/* Loading State */}
                     {isConnecting && !dashboardData && (
-                        <div className="bg-white rounded-xl shadow-lg p-12">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-white rounded-xl shadow-lg p-12"
+                        >
                             <div className="flex flex-col items-center justify-center">
-                                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mb-4"></div>
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                    className="mb-4"
+                                >
+                                    <Loader2 className="h-16 w-16 text-indigo-600" />
+                                </motion.div>
                                 <p className="text-gray-600 font-medium">
                                     Conectando al servidor...
                                 </p>
@@ -170,7 +242,7 @@ export default function MetricsPage() {
                                     Estableciendo conexión Socket.IO
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
 
                     {/* Metrics Grid */}
@@ -182,6 +254,7 @@ export default function MetricsPage() {
                                 metrics={dashboardData.users || []}
                                 icon="👥"
                                 color="blue"
+                                onMetricClick={(metric) => handleMetricClick(metric, "Métricas de Usuarios", "blue")}
                             />
 
                             {/* Improvement Data Metrics */}
@@ -190,121 +263,126 @@ export default function MetricsPage() {
                                 metrics={dashboardData.improvementData || []}
                                 icon="📈"
                                 color="indigo"
+                                onMetricClick={(metric) => handleMetricClick(metric, "Datos de Mejora", "indigo")}
                             />
                         </div>
                     )}
 
                     {/* Empty State */}
                     {!isConnecting && !dashboardData && !error && (
-                        <div className="bg-white rounded-xl shadow-lg p-12">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white rounded-xl shadow-lg p-12"
+                        >
                             <div className="flex flex-col items-center justify-center text-center">
-                                <div className="bg-gray-100 rounded-full p-6 mb-4">
-                                    <svg
-                                        className="w-16 h-16 text-gray-400"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                                        />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                                    No hay datos disponibles
-                                </h3>
-                                <p className="text-gray-600 mb-4">
-                                    Esperando datos del servidor...
-                                </p>
-                                <button
-                                    onClick={reconnect}
-                                    className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors"
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-6 mb-4"
                                 >
+                                    <BarChart3 className="w-16 h-16 text-gray-400" />
+                                </motion.div>
+                                <motion.h3
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-xl font-semibold text-gray-900 mb-2"
+                                >
+                                    No hay datos disponibles
+                                </motion.h3>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="text-gray-600 mb-4"
+                                >
+                                    Esperando datos del servidor...
+                                </motion.p>
+                                <motion.button
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.5 }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={reconnect}
+                                    className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors shadow-md"
+                                >
+                                    <RefreshCw className="w-4 h-4" />
                                     Actualizar
-                                </button>
+                                </motion.button>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
 
                     {/* Info Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            whileHover={{ y: -5 }}
+                            className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all"
+                        >
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="bg-blue-100 rounded-lg p-2">
-                                    <svg
-                                        className="w-6 h-6 text-blue-600"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                                        />
-                                    </svg>
+                                    <Zap className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <h3 className="font-semibold text-gray-900">Tiempo Real</h3>
                             </div>
                             <p className="text-sm text-gray-600">
                                 Las métricas se actualizan automáticamente mediante WebSocket
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                            whileHover={{ y: -5 }}
+                            className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 hover:shadow-xl transition-all"
+                        >
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="bg-green-100 rounded-lg p-2">
-                                    <svg
-                                        className="w-6 h-6 text-green-600"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                                        />
-                                    </svg>
+                                    <Shield className="w-6 h-6 text-green-600" />
                                 </div>
                                 <h3 className="font-semibold text-gray-900">Seguro</h3>
                             </div>
                             <p className="text-sm text-gray-600">
                                 Conexión autenticada mediante JWT token
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.5 }}
+                            whileHover={{ y: -5 }}
+                            className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all"
+                        >
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="bg-purple-100 rounded-lg p-2">
-                                    <svg
-                                        className="w-6 h-6 text-purple-600"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                                        />
-                                    </svg>
+                                    <RotateCw className="w-6 h-6 text-purple-600" />
                                 </div>
                                 <h3 className="font-semibold text-gray-900">Auto-reconexión</h3>
                             </div>
                             <p className="text-sm text-gray-600">
                                 Reconexión automática en caso de pérdida de conexión
                             </p>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </main>
+
+            {/* Modal de Detalles */}
+            <MetricDetailModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                metric={selectedMetric}
+                color={modalColor}
+                title={modalTitle}
+            />
         </div>
     );
 }

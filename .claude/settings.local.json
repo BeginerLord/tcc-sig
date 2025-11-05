@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(pnpm create:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(nul)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []
