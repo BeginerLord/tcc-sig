@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { CreateActionRequest } from "@/models/Action";
+import { useImprovementPlans } from "@/hooks/useImprovementPlans";
+import { useObjectives } from "@/hooks/useObjectives";
 
 interface ActionFormProps {
   onSubmit: (data: CreateActionRequest) => Promise<void>;
@@ -9,6 +11,9 @@ interface ActionFormProps {
 }
 
 export function ActionForm({ onSubmit, isLoading }: ActionFormProps) {
+  const { improvementPlans, isLoadingPlans } = useImprovementPlans();
+  const { objectives, isLoadingObjectives } = useObjectives();
+
   const [formData, setFormData] = useState<CreateActionRequest>({
     code_improvement: 0,
     code_objective: 0,
@@ -33,11 +38,11 @@ export function ActionForm({ onSubmit, isLoading }: ActionFormProps) {
     }
 
     if (!formData.code_improvement || formData.code_improvement <= 0) {
-      newErrors.code_improvement = "El código del plan de mejora es requerido";
+      newErrors.code_improvement = "Debes seleccionar un plan de mejora";
     }
 
     if (!formData.code_objective || formData.code_objective <= 0) {
-      newErrors.code_objective = "El código del objetivo es requerido";
+      newErrors.code_objective = "Debes seleccionar un objetivo";
     }
 
     setErrors(newErrors);
@@ -78,12 +83,10 @@ export function ActionForm({ onSubmit, isLoading }: ActionFormProps) {
               htmlFor="code_improvement"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Código del Plan de Mejora *
+              Plan de Mejora *
             </label>
-            <input
+            <select
               id="code_improvement"
-              type="number"
-              min="1"
               value={formData.code_improvement || ""}
               onChange={(e) =>
                 setFormData({
@@ -91,12 +94,18 @@ export function ActionForm({ onSubmit, isLoading }: ActionFormProps) {
                   code_improvement: parseInt(e.target.value) || 0,
                 })
               }
-              placeholder="Ej: 1"
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none ${
                 errors.code_improvement ? "border-red-500" : "border-gray-300"
               }`}
-              disabled={isLoading}
-            />
+              disabled={isLoading || isLoadingPlans}
+            >
+              <option value="">Selecciona un plan de mejora</option>
+              {improvementPlans.map((plan) => (
+                <option key={plan.code} value={plan.code}>
+                  #{plan.code} - {plan.title}
+                </option>
+              ))}
+            </select>
             {errors.code_improvement && (
               <p className="mt-1 text-sm text-red-600">{errors.code_improvement}</p>
             )}
@@ -108,12 +117,10 @@ export function ActionForm({ onSubmit, isLoading }: ActionFormProps) {
               htmlFor="code_objective"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Código del Objetivo *
+              Objetivo *
             </label>
-            <input
+            <select
               id="code_objective"
-              type="number"
-              min="1"
               value={formData.code_objective || ""}
               onChange={(e) =>
                 setFormData({
@@ -121,12 +128,19 @@ export function ActionForm({ onSubmit, isLoading }: ActionFormProps) {
                   code_objective: parseInt(e.target.value) || 0,
                 })
               }
-              placeholder="Ej: 1"
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none ${
                 errors.code_objective ? "border-red-500" : "border-gray-300"
               }`}
-              disabled={isLoading}
-            />
+              disabled={isLoading || isLoadingObjectives}
+            >
+              <option value="">Selecciona un objetivo</option>
+              {objectives.map((objective) => (
+                <option key={objective.code} value={objective.code}>
+                  #{objective.code} - {objective.body.substring(0, 60)}
+                  {objective.body.length > 60 ? "..." : ""}
+                </option>
+              ))}
+            </select>
             {errors.code_objective && (
               <p className="mt-1 text-sm text-red-600">{errors.code_objective}</p>
             )}
