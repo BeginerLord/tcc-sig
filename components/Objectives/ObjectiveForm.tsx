@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { CreateObjectiveRequest } from "@/models/Objective";
+import { useImprovementPlans } from "@/hooks/useImprovementPlans";
+import { useTypeObjectives } from "@/hooks/useTypeObjectives";
 
 interface ObjectiveFormProps {
   onSubmit: (data: CreateObjectiveRequest) => Promise<void>;
@@ -9,6 +11,8 @@ interface ObjectiveFormProps {
 }
 
 export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
+  const { improvementPlans, isLoadingPlans } = useImprovementPlans();
+  const { typeObjectives, isLoadingTypeObjectives } = useTypeObjectives();
   const [formData, setFormData] = useState<CreateObjectiveRequest>({
     code_improvement: 0,
     code_type: 0,
@@ -20,11 +24,11 @@ export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
     const newErrors: Record<string, string> = {};
 
     if (!formData.code_improvement || formData.code_improvement <= 0) {
-      newErrors.code_improvement = "El código del plan de mejora es requerido";
+      newErrors.code_improvement = "Debes seleccionar un plan de mejora";
     }
 
     if (!formData.code_type || formData.code_type <= 0) {
-      newErrors.code_type = "El código del tipo de objetivo es requerido";
+      newErrors.code_type = "Debes seleccionar un tipo de objetivo";
     }
 
     if (!formData.body.trim()) {
@@ -70,12 +74,10 @@ export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
               htmlFor="code_improvement"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Código del Plan de Mejora *
+              Plan de Mejora *
             </label>
-            <input
+            <select
               id="code_improvement"
-              type="number"
-              min="1"
               value={formData.code_improvement || ""}
               onChange={(e) =>
                 setFormData({
@@ -83,12 +85,17 @@ export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
                   code_improvement: parseInt(e.target.value) || 0,
                 })
               }
-              placeholder="Ej: 1"
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none ${
-                errors.code_improvement ? "border-red-500" : "border-gray-300"
-              }`}
-              disabled={isLoading}
-            />
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none ${errors.code_improvement ? "border-red-500" : "border-gray-300"
+                }`}
+              disabled={isLoading || isLoadingPlans}
+            >
+              <option value="">Selecciona un plan de mejora</option>
+              {improvementPlans.map((plan) => (
+                <option key={plan.code} value={plan.code}>
+                  #{plan.code} - {plan.title}
+                </option>
+              ))}
+            </select>
             {errors.code_improvement && (
               <p className="mt-1 text-sm text-red-600">{errors.code_improvement}</p>
             )}
@@ -100,12 +107,10 @@ export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
               htmlFor="code_type"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Código del Tipo de Objetivo *
+              Tipo de Objetivo *
             </label>
-            <input
+            <select
               id="code_type"
-              type="number"
-              min="1"
               value={formData.code_type || ""}
               onChange={(e) =>
                 setFormData({
@@ -113,12 +118,17 @@ export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
                   code_type: parseInt(e.target.value) || 0,
                 })
               }
-              placeholder="Ej: 1"
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none ${
-                errors.code_type ? "border-red-500" : "border-gray-300"
-              }`}
-              disabled={isLoading}
-            />
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none ${errors.code_type ? "border-red-500" : "border-gray-300"
+                }`}
+              disabled={isLoading || isLoadingTypeObjectives}
+            >
+              <option value="">Selecciona un tipo de objetivo</option>
+              {typeObjectives.map((type) => (
+                <option key={type.code} value={type.code}>
+                  #{type.code} - {type.name}
+                </option>
+              ))}
+            </select>
             {errors.code_type && (
               <p className="mt-1 text-sm text-red-600">{errors.code_type}</p>
             )}
@@ -139,9 +149,8 @@ export function ObjectiveForm({ onSubmit, isLoading }: ObjectiveFormProps) {
             onChange={(e) => setFormData({ ...formData, body: e.target.value })}
             placeholder="Describe el objetivo que se desea alcanzar..."
             rows={5}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none resize-none ${
-              errors.body ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none resize-none ${errors.body ? "border-red-500" : "border-gray-300"
+              }`}
             disabled={isLoading}
           />
           {errors.body && <p className="mt-1 text-sm text-red-600">{errors.body}</p>}
