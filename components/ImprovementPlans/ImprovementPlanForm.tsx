@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CreateImprovementPlanRequest } from "@/models/ImprovementPlan";
+import { useTimeframes } from "@/hooks/useTimeframes";
 
 interface ImprovementPlanFormProps {
   onSubmit: (data: CreateImprovementPlanRequest) => Promise<void>;
@@ -9,6 +10,7 @@ interface ImprovementPlanFormProps {
 }
 
 export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanFormProps) {
+  const { timeframes, isLoadingTimeframes } = useTimeframes();
   const [formData, setFormData] = useState<CreateImprovementPlanRequest>({
     title: "",
     description: "",
@@ -39,7 +41,7 @@ export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanForm
     }
 
     if (!formData.code_timeframes || formData.code_timeframes <= 0) {
-      newErrors.code_timeframes = "El código del periodo es requerido";
+      newErrors.code_timeframes = "Debes seleccionar un periodo de tiempo";
     }
 
     setErrors(newErrors);
@@ -84,9 +86,8 @@ export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanForm
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             placeholder="Ej: Plan de Mejora Q1 2024"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none ${
-              errors.title ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none ${errors.title ? "border-red-500" : "border-gray-300"
+              }`}
             disabled={isLoading}
           />
           {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
@@ -98,12 +99,10 @@ export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanForm
             htmlFor="code_timeframes"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Código del Periodo de Tiempo *
+            Periodo de Tiempo *
           </label>
-          <input
+          <select
             id="code_timeframes"
-            type="number"
-            min="1"
             value={formData.code_timeframes || ""}
             onChange={(e) =>
               setFormData({
@@ -111,12 +110,17 @@ export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanForm
                 code_timeframes: parseInt(e.target.value) || 0,
               })
             }
-            placeholder="Ej: 1"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none ${
-              errors.code_timeframes ? "border-red-500" : "border-gray-300"
-            }`}
-            disabled={isLoading}
-          />
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none ${errors.code_timeframes ? "border-red-500" : "border-gray-300"
+              }`}
+            disabled={isLoading || isLoadingTimeframes}
+          >
+            <option value="">Selecciona un periodo de tiempo</option>
+            {timeframes.map((timeframe) => (
+              <option key={timeframe.code} value={timeframe.code}>
+                #{timeframe.code} - {timeframe.name}
+              </option>
+            ))}
+          </select>
           {errors.code_timeframes && (
             <p className="mt-1 text-sm text-red-600">{errors.code_timeframes}</p>
           )}
@@ -138,9 +142,8 @@ export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanForm
             }
             placeholder="Describe detalladamente el plan de mejora..."
             rows={4}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none resize-none ${
-              errors.description ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none resize-none ${errors.description ? "border-red-500" : "border-gray-300"
+              }`}
             disabled={isLoading}
           />
           {errors.description && (
@@ -167,9 +170,8 @@ export function ImprovementPlanForm({ onSubmit, isLoading }: ImprovementPlanForm
             }
             placeholder="Agrega comentarios adicionales sobre el plan..."
             rows={3}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none resize-none ${
-              errors.comment ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none resize-none ${errors.comment ? "border-red-500" : "border-gray-300"
+              }`}
             disabled={isLoading}
           />
           {errors.comment && (
