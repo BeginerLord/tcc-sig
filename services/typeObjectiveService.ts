@@ -39,13 +39,20 @@ export const typeObjectiveService = {
   /**
    * PATCH /type-objectives/updateNameTypeObjective
    * Actualiza el nombre de un tipo de objetivo
+   * IMPORTANTE: Los parámetros se envían como query params, no en el body
    */
   updateTypeObjectiveName: async (
     data: UpdateTypeObjectiveNameRequest
   ): Promise<UpdateTypeObjectiveNameResponse> => {
     const response = await KaizenProApi.patch<UpdateTypeObjectiveNameResponse>(
       "/type-objectives/updateNameTypeObjective",
-      data
+      {},  // Body vacío (objeto vacío en lugar de null)
+      {
+        params: {
+          code: data.code,
+          name: data.name,
+        },
+      }
     );
     return response.data;
   },

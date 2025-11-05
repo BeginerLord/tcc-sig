@@ -46,7 +46,16 @@ export function TypeObjectiveForm({
     if (!validate()) return;
 
     try {
-      await onSubmit({ name: name.trim() });
+      // Si estamos editando, incluir el code en los datos
+      const submitData: any = { name: name.trim() };
+      if (editData && editData.code) {
+        submitData.code = editData.code;
+      }
+
+      console.log("Form submitting data:", submitData);
+      console.log("Edit mode:", !!editData);
+
+      await onSubmit(submitData);
       setName("");
       setError("");
     } catch (error) {

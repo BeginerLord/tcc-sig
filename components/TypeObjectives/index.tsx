@@ -31,17 +31,25 @@ export function TypeObjectivesManagement() {
     }
   };
 
-  const handleUpdate = async (data: CreateTypeObjectiveRequest) => {
-    if (!editingTypeObjective) return;
+  const handleUpdate = async (data: any) => {
+    if (!editingTypeObjective || !data.code) {
+      console.error("Missing editingTypeObjective or data.code:", { editingTypeObjective, data });
+      return;
+    }
 
     try {
-      await updateTypeObjectiveName({
-        code: editingTypeObjective.code,
-        name: data.name,
-      });
+      const updatePayload = {
+        code: Number(data.code),  // Asegurar que sea número
+        name: data.name.trim(),
+      };
+
+      console.log("Sending update with payload:", updatePayload);
+
+      await updateTypeObjectiveName(updatePayload);
       alert("Tipo de objetivo actualizado exitosamente");
       setEditingTypeObjective(null);
     } catch (error: any) {
+      console.error("Error updating type objective:", error);
       alert(error?.response?.data?.message || "Error al actualizar tipo de objetivo");
       throw error;
     }
