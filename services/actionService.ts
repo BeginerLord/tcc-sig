@@ -37,15 +37,14 @@ export const actionService = {
   },
 
   /**
-   * PATCH /actions/finalize
+   * PATCH /actions/finalize?code={code}
    * Finaliza una acción existente
    */
   finalizeAction: async (
     data: FinalizeActionRequest
   ): Promise<FinalizeActionResponse> => {
     const response = await KaizenProApi.patch<FinalizeActionResponse>(
-      "/actions/finalize",
-      data
+      `/actions/finalize?code=${data.code}`
     );
     return response.data;
   },
