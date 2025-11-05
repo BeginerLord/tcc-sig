@@ -75,10 +75,12 @@ export function TimeframeList({
   };
 
   const handleSaveExtension = async (code: number) => {
-    if (!extensionDate) {
-      alert("La fecha de extensión no puede estar vacía");
+    // Validar que la fecha no esté vacía según requerimiento del backend
+    if (!extensionDate || extensionDate.trim() === "") {
+      alert("La fecha de extensión es requerida. Si desea eliminarla, contacte al administrador.");
       return;
     }
+
     try {
       await onEditExtensionDate(code, extensionDate);
       setEditingExtension(null);

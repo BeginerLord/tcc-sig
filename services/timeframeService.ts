@@ -45,9 +45,16 @@ export const timeframeService = {
   updateTimeframeName: async (
     data: UpdateTimeframeNameRequest
   ): Promise<UpdateTimeframeNameResponse> => {
+    // Enviar como query parameters según la API
     const response = await KaizenProApi.patch<UpdateTimeframeNameResponse>(
       "/timeframes/updateTimeframeName",
-      data
+      {},
+      {
+        params: {
+          code: data.code,
+          name: data.name
+        }
+      }
     );
     return response.data;
   },
@@ -59,9 +66,16 @@ export const timeframeService = {
   updateTimeframeExtensionDate: async (
     data: UpdateTimeframeExtensionDateRequest
   ): Promise<UpdateTimeframeExtensionDateResponse> => {
+    // Enviar como query parameters según la API
     const response = await KaizenProApi.patch<UpdateTimeframeExtensionDateResponse>(
       "/timeframes/updateTimeframeExtensionDate",
-      data
+      {},
+      {
+        params: {
+          code: data.code,
+          extension_date: data.extension_date
+        }
+      }
     );
     return response.data;
   },

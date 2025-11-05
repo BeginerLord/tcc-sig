@@ -44,7 +44,7 @@ export interface UpdateTimeframeNameResponse {
 // PATCH /timeframes/updateTimeframeExtensionDate
 export interface UpdateTimeframeExtensionDateRequest {
   code: number;
-  extension_date: string; // Formato: YYYY-MM-DD o date string
+  extension_date: string; // Formato: YYYY-MM-DD o date string (requerido por el backend)
 }
 
 export interface UpdateTimeframeExtensionDateResponse {

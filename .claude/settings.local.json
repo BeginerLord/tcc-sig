@@ -4,7 +4,8 @@
       "Bash(pnpm create:*)",
       "Bash(tree:*)",
       "Bash(nul)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:localhost)"
     ],
     "deny": [],
     "ask": []
