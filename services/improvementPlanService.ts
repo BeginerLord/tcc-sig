@@ -37,15 +37,14 @@ export const improvementPlanService = {
   },
 
   /**
-   * PATCH /improvementplan/finalizeImprovementPlan
+   * PATCH /improvementplan/finalizeImprovementPlan?code={code}
    * Finaliza un plan de mejora existente
    */
   finalizeImprovementPlan: async (
     data: FinalizeImprovementPlanRequest
   ): Promise<FinalizeImprovementPlanResponse> => {
     const response = await KaizenProApi.patch<FinalizeImprovementPlanResponse>(
-      "/improvementplan/finalizeImprovementPlan",
-      data
+      `/improvementplan/finalizeImprovementPlan?code=${data.code}`
     );
     return response.data;
   },
